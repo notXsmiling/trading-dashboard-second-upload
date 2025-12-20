@@ -1,0 +1,75 @@
+{
+  "strategies": {
+    "sweep": [
+      "Sweep Old Structure High",
+      "Sweep Old Structure Low",
+      "Sweep Asia High",
+      "Sweep Asia Low",
+      "Sweep PDH",
+      "Sweep PDL"
+    ],
+    "break": [
+      "Break PDH",
+      "Break PDL",
+      "Break Asia High",
+      "Break Asia Low",
+      "FVG Top Break",
+      "FVG Bottom Break"
+    ],
+    "fill": [
+      "FVG H4 FVG",
+      "FVG H1 FVG",
+      "FVG m15 FVG",
+      "Gap Fill & Continuation"
+    ]
+  },
+  
+  "timeframes": ["D", "H4", "H1", "M15"],
+  "pdLevels": ["PDH", "PDL"],
+  "sessionActions": [
+    "Asia High",
+    "Asia Low",
+    "Break Asia High",
+    "Break Asia Low",
+    "Sweep Asia High",
+    "Sweep Asia Low",
+    "Entry in Asia Session",
+    "Asia Not Yet Break/Sweep"
+  ],
+  "gapActions": [
+    "Gap Up",
+    "Gap Down",
+    "No Gap",
+    "Fill Gap Up",
+    "Fill Gap Down"
+  ],
+  "actionTypes": {
+    "bullish": "Bullish FVG",
+    "bearish": "Bearish FVG",
+    "break": "Break",
+    "sweep": "Sweep",
+    "gap-up": "Gap Up",
+    "gap-down": "Gap Down",
+    "no-gap": "No Gap",
+    "fill-gap-up": "Fill Gap Up",
+    "fill-gap-down": "Fill Gap Down"
+  },
+  "entryTypes": [
+    {
+      "id": "sweep",
+      "name": "Sweep Type",
+      "description": "Enter on liquidity sweeps"
+    },
+    {
+      "id": "break",
+      "name": "Break Type",
+      "description": "Enter on level breaks"
+    },
+    {
+      "id": "fill",
+      "name": "Fill Type",
+      "description": "Enter on FVG fills"
+    }
+  ]
+  
+}

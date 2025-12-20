@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Analysis Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Trading Analysis Dashboard</h1>
+            <p class="subtitle">All analysis options on one page - Yesterday, Today, Entry Strategy, Entry Selection, and TP Selection</p>
+        </header>
+        
+        <div class="dashboard">
+            <!-- Trade Setup Panel -->
+            <div class="panel trade-setup-panel">
+                <h2><i class="fas fa-cogs"></i> Trade Setup</h2>
+                
+                <div class="setup-grid">
+                    <!-- Date Selection -->
+                    <div class="setup-section">
+                        <h3><i class="fas fa-calendar-alt"></i> Date Selection</h3>
+                        <div class="setup-options">
+                            <input type="date" id="trade-date" class="date-picker">
+                            <div class="setup-btn date-btn active" data-date="today">
+                                <i class="fas fa-calendar-day"></i> Today
+                            </div>
+                            <div class="setup-btn date-btn" data-date="yesterday">
+                                <i class="fas fa-calendar"></i> Yesterday
+                            </div>
+                            <div class="setup-btn date-btn" data-date="custom">
+                                <i class="fas fa-calendar-plus"></i> Custom
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pair Selection -->
+                    <div class="setup-section">
+                        <h3><i class="fas fa-chart-line"></i> Pair Selection</h3>
+                        <div class="setup-options">
+                            <div class="setup-btn pair-btn active" data-pair="XAUUSD">
+                                <i class="fas fa-coins"></i> XAUUSD
+                            </div>
+                            <div class="setup-btn pair-btn" data-pair="EURUSD">
+                                <i class="fas fa-euro-sign"></i> EURUSD
+                            </div>
+                            <div class="setup-btn pair-btn" data-pair="GBPUSD">
+                                <i class="fas fa-pound-sign"></i> GBPUSD
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Direction Selection -->
+                    <div class="setup-section">
+                        <h3><i class="fas fa-arrows-alt-v"></i> Direction</h3>
+                        <div class="setup-options">
+                            <div class="setup-btn direction-btn bullish active" data-direction="buy">
+                                <i class="fas fa-arrow-up"></i> Buy
+                            </div>
+                            <div class="setup-btn direction-btn bearish" data-direction="sell">
+                                <i class="fas fa-arrow-down"></i> Sell
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Selected Setup Summary -->
+                <div class="selected-setup-box">
+                    <h4><i class="fas fa-info-circle"></i> Current Setup</h4>
+                    <div class="setup-summary">
+                        <div class="setup-item">
+                            <span class="setup-label">Date:</span>
+                            <span id="current-date" class="setup-value">Today</span>
+                        </div>
+                        <div class="setup-item">
+                            <span class="setup-label">Pair:</span>
+                            <span id="current-pair" class="setup-value">XAUUSD</span>
+                        </div>
+                        <div class="setup-item">
+                            <span class="setup-label">Direction:</span>
+                            <span id="current-direction" class="setup-value bullish-text">Buy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Yesterday Analysis Panel -->
+            <div class="panel">
+                <h2><i class="fas fa-chart-line"></i> Yesterday Analysis</h2>
+                
+                <div class="analysis-sections">
+                    <!-- Ytd Day Section -->
+                    <div class="analysis-section" id="yesterday-day-section">
+                        <h3><i class="fas fa-calendar"></i> Ytd Day</h3>
+                        
+                        <div class="action-buttons">
+                            <div class="action-btn bullish" data-action="bull-day">
+                                <i class="fas fa-arrow-up"></i> Bull Day
+                            </div>
+                            <div class="action-btn bearish" data-action="bear-day">
+                                <i class="fas fa-arrow-down"></i> Bear Day
+                            </div>
+                            <div class="action-btn bullish" data-action="ranging-bull-day">
+                                <i class="fas fa-arrows-alt-h"></i> Ranging but Bull
+                            </div>
+                            <div class="action-btn bearish" data-action="ranging-bear-day">
+                                <i class="fas fa-arrows-alt-h"></i> Ranging but Bear
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FVG Section -->
+                    <div class="analysis-section" id="yesterday-fvg-section">
+                        <h3><i class="fas fa-exchange-alt"></i> FVG</h3>
+                        <div class="timeframes">
+                            <div class="timeframe-btn active" data-timeframe="d">D</div>
+                            <div class="timeframe-btn" data-timeframe="h4">H4</div>
+                            <div class="timeframe-btn" data-timeframe="h1">H1</div>
+                            <div class="timeframe-btn" data-timeframe="m15">M15</div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <div class="action-btn bullish" data-action="bullish">
+                                <i class="fas fa-arrow-up"></i> Bullish FVG
+                            </div>
+                            <div class="action-btn bearish" data-action="bearish">
+                                <i class="fas fa-arrow-down"></i> Bearish FVG
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PD Section -->
+                    <div class="analysis-section" id="yesterday-pd-section">
+                        <h3><i class="fas fa-calendar-day"></i> PD</h3>
+                        
+                        <div class="action-buttons">
+                            <div class="action-btn break bullish" data-action="break-pdh">
+                                <i class="fas fa-bolt"></i> Break PDH
+                            </div>
+                            <div class="action-btn sweep bearish" data-action="sweep-pdh">
+                                <i class="fas fa-wave-square"></i> Sweep PDH
+                            </div>
+                            <div class="action-btn break bearish" data-action="break-pdl">
+                                <i class="fas fa-bolt"></i> Break PDL
+                            </div>
+                            <div class="action-btn sweep bullish" data-action="sweep-pdl">
+                                <i class="fas fa-wave-square"></i> Sweep PDL
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Structure Analysis Sections -->
+                    <div class="analysis-section structure-section" id="yesterday-m15-section">
+                        <h3><i class="fas fa-project-diagram"></i> m15 Structure</h3>
+                        
+                        <div class="structure-grid">
+                            <div class="structure-column">
+                                <h4 class="structure-header bullish">Bull</h4>
+                                <div class="action-buttons">
+                                    <div class="action-btn break bullish" data-action="break-bull-high-m15">
+                                        <i class="fas fa-bolt"></i> Break Bull High
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bull-high-m15">
+                                        <i class="fas fa-wave-square"></i> Sweep Bull High
+                                    </div>
+                                    <div class="action-btn break neutral" data-action="break-bull-low-m15">
+                                        <i class="fas fa-bolt"></i> Break Bull Low
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bull-low-m15">
+                                        <i class="fas fa-wave-square"></i> Sweep Bull Low
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="structure-column">
+                                <h4 class="structure-header bearish">Bear</h4>
+                                <div class="action-buttons">
+                                    <div class="action-btn break bearish" data-action="break-bear-high-m15">
+                                        <i class="fas fa-bolt"></i> Break Bear High
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bear-high-m15">
+                                        <i class="fas fa-wave-square"></i> Sweep Bear High
+                                    </div>
+                                    <div class="action-btn break neutral" data-action="break-bear-low-m15">
+                                        <i class="fas fa-bolt"></i> Break Bear Low
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bear-low-m15">
+                                        <i class="fas fa-wave-square"></i> Sweep Bear Low
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-section structure-section" id="yesterday-m5-section">
+                        <h3><i class="fas fa-project-diagram"></i> m5 Structure</h3>
+                        
+                        <div class="structure-grid">
+                            <div class="structure-column">
+                                <h4 class="structure-header bullish">Bull</h4>
+                                <div class="action-buttons">
+                                    <div class="action-btn break bullish" data-action="break-bull-high-m5">
+                                        <i class="fas fa-bolt"></i> Break Bull High
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bull-high-m5">
+                                        <i class="fas fa-wave-square"></i> Sweep Bull High
+                                    </div>
+                                    <div class="action-btn break neutral" data-action="break-bull-low-m5">
+                                        <i class="fas fa-bolt"></i> Break Bull Low
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bull-low-m5">
+                                        <i class="fas fa-wave-square"></i> Sweep Bull Low
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="structure-column">
+                                <h4 class="structure-header bearish">Bear</h4>
+                                <div class="action-buttons">
+                                    <div class="action-btn break bearish" data-action="break-bear-high-m5">
+                                        <i class="fas fa-bolt"></i> Break Bear High
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bear-high-m5">
+                                        <i class="fas fa-wave-square"></i> Sweep Bear High
+                                    </div>
+                                    <div class="action-btn break neutral" data-action="break-bear-low-m5">
+                                        <i class="fas fa-bolt"></i> Break Bear Low
+                                    </div>
+                                    <div class="action-btn sweep neutral" data-action="sweep-bear-low-m5">
+                                        <i class="fas fa-wave-square"></i> Sweep Bear Low
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Yesterday Analysis Summary -->
+                <div class="panel-summary-box">
+                    <h4><i class="fas fa-list-check"></i> Yesterday Analysis Summary</h4>
+                    <div class="summary-content">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Ytd Day:</span>
+                                <span id="yesterday-day-summary" class="summary-value empty">No selection</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">FVG:</span>
+                                <span id="yesterday-fvg-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">PD:</span>
+                                <span id="yesterday-pd-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m15 Structure:</span>
+                                <span id="yesterday-m15-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Structure:</span>
+                                <span id="yesterday-m5-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Today Analysis Panel -->
+            <div class="panel">
+                <h2><i class="fas fa-chart-bar"></i> Today Analysis</h2>
+                
+                <div class="today-grid">
+                    <!-- Column 1 -->
+                    <div class="today-column">
+                        <!-- FVG Section -->
+                        <div class="today-option" id="today-fvg-section">
+                            <h3><i class="fas fa-exchange-alt"></i> FVG</h3>
+                            <div class="timeframes">
+                                <div class="timeframe-btn active" data-timeframe="d">D</div>
+                                <div class="timeframe-btn" data-timeframe="h4">H4</div>
+                                <div class="timeframe-btn" data-timeframe="h1">H1</div>
+                                <div class="timeframe-btn" data-timeframe="m15">M15</div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <div class="action-btn bullish" data-action="bullish">
+                                    <i class="fas fa-arrow-up"></i> Bullish FVG
+                                </div>
+                                <div class="action-btn bearish" data-action="bearish">
+                                    <i class="fas fa-arrow-down"></i> Bearish FVG
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Gap Section -->
+                        <div class="today-option" id="today-gap-section">
+                            <h3><i class="fas fa-arrows-alt-v"></i> Gap</h3>
+                            <div class="action-buttons">
+                                <div class="action-btn gap-up" data-action="gap-up">
+                                    <i class="fas fa-arrow-up"></i> Gap Up
+                                </div>
+                                <div class="action-btn gap-down" data-action="gap-down">
+                                    <i class="fas fa-arrow-down"></i> Gap Down
+                                </div>
+                                <div class="action-btn no-gap" data-action="no-gap">
+                                    <i class="fas fa-minus"></i> No Gap
+                                </div>
+                                <div class="action-btn fill" data-action="fill-gap-up">
+                                    <i class="fas fa-fill-drip"></i> Fill Gap Up
+                                </div>
+                                <div class="action-btn fill" data-action="fill-gap-down">
+                                    <i class="fas fa-fill-drip"></i> Fill Gap Down
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- m15 Structure Section -->
+                        <div class="today-option structure-section" id="today-m15-section">
+                            <h3><i class="fas fa-project-diagram"></i> m15 Structure</h3>
+                            
+                            <div class="structure-grid">
+                                <div class="structure-column">
+                                    <h4 class="structure-header bullish">Bull</h4>
+                                    <div class="action-buttons">
+                                        <div class="action-btn break bullish" data-action="break-bull-high-m15-today">
+                                            <i class="fas fa-bolt"></i> Break Bull High
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bull-high-m15-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bull High
+                                        </div>
+                                        <div class="action-btn break neutral" data-action="break-bull-low-m15-today">
+                                            <i class="fas fa-bolt"></i> Break Bull Low
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bull-low-m15-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bull Low
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="structure-column">
+                                    <h4 class="structure-header bearish">Bear</h4>
+                                    <div class="action-buttons">
+                                        <div class="action-btn break bearish" data-action="break-bear-high-m15-today">
+                                            <i class="fas fa-bolt"></i> Break Bear High
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bear-high-m15-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bear High
+                                        </div>
+                                        <div class="action-btn break neutral" data-action="break-bear-low-m15-today">
+                                            <i class="fas fa-bolt"></i> Break Bear Low
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bear-low-m15-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bear Low
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 2 -->
+                    <div class="today-column">
+                        <!-- Session Section -->
+                        <div class="today-option" id="today-session-section">
+                            <h3><i class="fas fa-clock"></i> Session</h3>
+                            <div class="action-buttons">
+                                <div class="action-btn" data-action="asia-high">
+                                    <i class="fas fa-mountain"></i> Asia High
+                                </div>
+                                <div class="action-btn" data-action="asia-low">
+                                    <i class="fas fa-valley"></i> Asia Low
+                                </div>
+                                <div class="action-btn break bullish" data-action="break-asia-high">
+                                    <i class="fas fa-bolt"></i> Break Asia High
+                                </div>
+                                <div class="action-btn break bearish" data-action="break-asia-low">
+                                    <i class="fas fa-bolt"></i> Break Asia Low
+                                </div>
+                                <div class="action-btn sweep bearish" data-action="sweep-asia-high">
+                                    <i class="fas fa-wave-square"></i> Sweep Asia High
+                                </div>
+                                <div class="action-btn sweep bullish" data-action="sweep-asia-low">
+                                    <i class="fas fa-wave-square"></i> Sweep Asia Low
+                                </div>
+                                <div class="action-btn" data-action="entry-asia-session">
+                                    <i class="fas fa-sign-in-alt"></i> Entry in Asia Session
+                                </div>
+                                <div class="action-btn" data-action="asia-no-break-sweep">
+                                    <i class="fas fa-pause"></i> Asia Not Yet Break/Sweep
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Round Number Section -->
+                        <div class="today-option" id="today-round-number-section">
+                            <h3><i class="fas fa-circle"></i> Round Number</h3>
+                            <div class="action-buttons">
+                                <div class="action-btn break bullish" data-action="break-rn-up">
+                                    <i class="fas fa-bolt"></i> Break RN Up
+                                </div>
+                                <div class="action-btn break bearish" data-action="break-rn-down">
+                                    <i class="fas fa-bolt"></i> Break RN Down
+                                </div>
+                                <div class="action-btn sweep neutral" data-action="sweep-rn-up">
+                                    <i class="fas fa-wave-square"></i> Sweep RN Up
+                                </div>
+                                <div class="action-btn sweep neutral" data-action="sweep-rn-down">
+                                    <i class="fas fa-wave-square"></i> Sweep RN Down
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- m5 Structure Section -->
+                        <div class="today-option structure-section" id="today-m5-section">
+                            <h3><i class="fas fa-project-diagram"></i> m5 Structure</h3>
+                            
+                            <div class="structure-grid">
+                                <div class="structure-column">
+                                    <h4 class="structure-header bullish">Bull</h4>
+                                    <div class="action-buttons">
+                                        <div class="action-btn break bullish" data-action="break-bull-high-m5-today">
+                                            <i class="fas fa-bolt"></i> Break Bull High
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bull-high-m5-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bull High
+                                        </div>
+                                        <div class="action-btn break neutral" data-action="break-bull-low-m5-today">
+                                            <i class="fas fa-bolt"></i> Break Bull Low
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bull-low-m5-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bull Low
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="structure-column">
+                                    <h4 class="structure-header bearish">Bear</h4>
+                                    <div class="action-buttons">
+                                        <div class="action-btn break bearish" data-action="break-bear-high-m5-today">
+                                            <i class="fas fa-bolt"></i> Break Bear High
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bear-high-m5-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bear High
+                                        </div>
+                                        <div class="action-btn break neutral" data-action="break-bear-low-m5-today">
+                                            <i class="fas fa-bolt"></i> Break Bear Low
+                                        </div>
+                                        <div class="action-btn sweep neutral" data-action="sweep-bear-low-m5-today">
+                                            <i class="fas fa-wave-square"></i> Sweep Bear Low
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Today Analysis Summary -->
+                <div class="panel-summary-box">
+                    <h4><i class="fas fa-list-check"></i> Today Analysis Summary</h4>
+                    <div class="summary-content">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">FVG:</span>
+                                <span id="today-fvg-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Session:</span>
+                                <span id="today-session-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Gap:</span>
+                                <span id="today-gap-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Round #:</span>
+                                <span id="today-rn-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m15 Structure:</span>
+                                <span id="today-m15-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Structure:</span>
+                                <span id="today-m5-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Entry Strategy Panel -->
+            <div class="panel">
+                <h2><i class="fas fa-chess-knight"></i> Entry Strategy</h2>
+                
+                <div class="entry-sections-grid">
+                    <!-- Break and Go Section -->
+                    <div class="entry-section" id="break-and-go-section">
+                        <h3><i class="fas fa-bolt"></i> Break and Go</h3>
+                        <div class="entry-options-grid">
+                            <div class="entry-option-btn break bullish" data-action="break-ah" data-ref="break-asia-high">
+                                <i class="fas fa-bolt"></i> Break AH
+                            </div>
+                            <div class="entry-option-btn break bearish" data-action="break-al" data-ref="break-asia-low">
+                                <i class="fas fa-bolt"></i> Break AL
+                            </div>
+                            <div class="entry-option-btn break bullish" data-action="break-pdh" data-ref="break-pdh">
+                                <i class="fas fa-bolt"></i> Break PDH
+                            </div>
+                            <div class="entry-option-btn break bearish" data-action="break-pdl" data-ref="break-pdl">
+                                <i class="fas fa-bolt"></i> Break PDL
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Break and Miti and Go Section -->
+                    <div class="entry-section" id="break-miti-go-section">
+                        <h3><i class="fas fa-shield-alt"></i> Break and Miti and Go</h3>
+                        <div class="entry-options-grid">
+                            <div class="entry-option-btn break-miti bullish" data-action="break-miti-ah" data-ref="break-asia-high">
+                                <i class="fas fa-shield-alt"></i> Break AH
+                            </div>
+                            <div class="entry-option-btn break-miti bearish" data-action="break-miti-al" data-ref="break-asia-low">
+                                <i class="fas fa-shield-alt"></i> Break AL
+                            </div>
+                            <div class="entry-option-btn break-miti bullish" data-action="break-miti-pdh" data-ref="break-pdh">
+                                <i class="fas fa-shield-alt"></i> Break PDH
+                            </div>
+                            <div class="entry-option-btn break-miti bearish" data-action="break-miti-pdl" data-ref="break-pdl">
+                                <i class="fas fa-shield-alt"></i> Break PDL
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sweep Type Section -->
+                    <div class="entry-section" id="sweep-type-section">
+                        <h3><i class="fas fa-wave-square"></i> Sweep Type</h3>
+                        <div class="entry-options-grid">
+                            <div class="entry-option-btn sweep bearish" data-strategy="Sweep Old Structure High">
+                                <i class="fas fa-wave-square"></i> Sweep Old Structure High
+                            </div>
+                            <div class="entry-option-btn sweep bullish" data-strategy="Sweep Old Structure Low">
+                                <i class="fas fa-wave-square"></i> Sweep Old Structure Low
+                            </div>
+                            <div class="entry-option-btn sweep bearish" data-strategy="Sweep Asia High" data-ref="sweep-asia-high">
+                                <i class="fas fa-wave-square"></i> Sweep Asia High
+                            </div>
+                            <div class="entry-option-btn sweep bullish" data-strategy="Sweep Asia Low" data-ref="sweep-asia-low">
+                                <i class="fas fa-wave-square"></i> Sweep Asia Low
+                            </div>
+                            <div class="entry-option-btn sweep bearish" data-strategy="Sweep PDH" data-ref="sweep-pdh">
+                                <i class="fas fa-wave-square"></i> Sweep PDH
+                            </div>
+                            <div class="entry-option-btn sweep bullish" data-strategy="Sweep PDL" data-ref="sweep-pdl">
+                                <i class="fas fa-wave-square"></i> Sweep PDL
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fill Type Section -->
+                    <div class="entry-section" id="fill-type-section">
+                        <h3><i class="fas fa-fill-drip"></i> Fill Type</h3>
+                        <div class="entry-options-grid">
+                            <div class="entry-option-btn fill" data-strategy="FVG H4 FVG">
+                                <i class="fas fa-fill-drip"></i> FVG H4 FVG
+                            </div>
+                            <div class="entry-option-btn fill" data-strategy="FVG H1 FVG">
+                                <i class="fas fa-fill-drip"></i> FVG H1 FVG
+                            </div>
+                            <div class="entry-option-btn fill" data-strategy="FVG m15 FVG">
+                                <i class="fas fa-fill-drip"></i> FVG m15 FVG
+                            </div>
+                            <div class="entry-option-btn fill" data-strategy="Gap Fill & Continuation" data-ref="fill-gap-up,fill-gap-down">
+                                <i class="fas fa-fill-drip"></i> Gap Fill & Continuation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Entry Strategy Summary -->
+                <div class="panel-summary-box">
+                    <h4><i class="fas fa-list-check"></i> Entry Strategy Summary</h4>
+                    <div class="summary-content">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Break & Go:</span>
+                                <span id="entry-breakgo-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Break & Miti:</span>
+                                <span id="entry-breakmiti-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Sweep Type:</span>
+                                <span id="entry-sweep-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Fill Type:</span>
+                                <span id="entry-fill-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Entry Selection Panel -->
+            <div class="panel">
+                <h2><i class="fas fa-bullseye"></i> Entry Selection</h2>
+                
+                <div class="entry-selection-grid">
+                    <!-- Direct Entry Section -->
+                    <div class="entry-selection-section">
+                        <h3><i class="fas fa-directions"></i> Direct Entry (DE)</h3>
+                        <div class="entry-selection-options">
+                            <div class="entry-selection-btn de" data-action="h4-de">
+                                <i class="fas fa-arrow-right"></i> H4 DE
+                            </div>
+                            <div class="entry-selection-btn de" data-action="h1-de">
+                                <i class="fas fa-arrow-right"></i> H1 DE
+                            </div>
+                            <div class="entry-selection-btn de" data-action="m15-de">
+                                <i class="fas fa-arrow-right"></i> m15 DE
+                            </div>
+                            <div class="entry-selection-btn de" data-action="m5-de">
+                                <i class="fas fa-arrow-right"></i> m5 DE
+                            </div>
+                            <div class="entry-selection-btn de" data-action="m5-in-m15-fvg">
+                                <i class="fas fa-arrow-right"></i> m5 in m15 FVG
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirmation Entry Section -->
+                    <div class="entry-selection-section">
+                        <h3><i class="fas fa-check-circle"></i> Confirmation Entry (CE)</h3>
+                        <div class="entry-selection-options">
+                            <div class="entry-selection-btn ce" data-action="h4-m15-m5">
+                                <i class="fas fa-layer-group"></i> H4 m15 m5
+                            </div>
+                            <div class="entry-selection-btn ce" data-action="h4-m15">
+                                <i class="fas fa-layer-group"></i> h4 m15
+                            </div>
+                            <div class="entry-selection-btn ce" data-action="h4-m5">
+                                <i class="fas fa-layer-group"></i> h4 m5
+                            </div>
+                            <div class="entry-selection-btn ce" data-action="h1-m15-m5">
+                                <i class="fas fa-layer-group"></i> H1 m15 m5
+                            </div>
+                            <div class="entry-selection-btn ce" data-action="h1-m15">
+                                <i class="fas fa-layer-group"></i> h1 m15
+                            </div>
+                            <div class="entry-selection-btn ce" data-action="h1-m5">
+                                <i class="fas fa-layer-group"></i> h1 m5
+                            </div>
+                            <div class="entry-selection-btn ce" data-action="m15-m5">
+                                <i class="fas fa-layer-group"></i> m15 m5
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- m5 Entry Type Section -->
+                    <div class="entry-selection-section">
+                        <h3><i class="fas fa-shield"></i> m5 Entry Type</h3>
+                        <div class="entry-selection-options">
+                            <div class="entry-selection-btn m5-type" data-action="cover-whole">
+                                <i class="fas fa-square-full"></i> Cover Whole
+                            </div>
+                            <div class="entry-selection-btn m5-type" data-action="cover-high">
+                                <i class="fas fa-arrow-up"></i> Cover High
+                            </div>
+                            <div class="entry-selection-btn m5-type" data-action="cover-low">
+                                <i class="fas fa-arrow-down"></i> Cover Low
+                            </div>
+                            <div class="entry-selection-btn m5-type" data-action="cover-previous">
+                                <i class="fas fa-history"></i> Cover Previous
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- BOS Type Section -->
+                    <div class="entry-selection-section">
+                        <h3><i class="fas fa-exchange-alt"></i> BOS Type</h3>
+                        <div class="entry-selection-options">
+                            <div class="entry-selection-btn bos bullish" data-action="bull-to-bull-bos">
+                                <i class="fas fa-arrow-up"></i> Bull to Bull BOS
+                            </div>
+                            <div class="entry-selection-btn bos bearish" data-action="bear-to-bear-bos">
+                                <i class="fas fa-arrow-down"></i> Bear to Bear BOS
+                            </div>
+                            <div class="entry-selection-btn bos mixed" data-action="bull-to-bear-bos">
+                                <i class="fas fa-arrows-alt-h"></i> Bull to Bear BOS
+                            </div>
+                            <div class="entry-selection-btn bos mixed" data-action="bear-to-bull-bos">
+                                <i class="fas fa-arrows-alt-h"></i> Bear to Bull BOS
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- m5 Age Section -->
+                    <div class="entry-selection-section">
+                        <h3><i class="fas fa-clock"></i> m5 Age</h3>
+                        <div class="entry-selection-options">
+                            <div class="entry-selection-btn m5-age new" data-action="new-m5">
+                                <i class="fas fa-star"></i> New m5
+                            </div>
+                            <div class="entry-selection-btn m5-age old" data-action="old-m5">
+                                <i class="fas fa-moon"></i> Old m5
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Entry Selection Summary -->
+                <div class="panel-summary-box">
+                    <h4><i class="fas fa-list-check"></i> Entry Selection Summary</h4>
+                    <div class="summary-content">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Direct Entry:</span>
+                                <span id="entry-de-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Confirmation Entry:</span>
+                                <span id="entry-ce-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Type:</span>
+                                <span id="entry-m5type-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">BOS Type:</span>
+                                <span id="entry-bos-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Age:</span>
+                                <span id="entry-m5age-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TP Selection Panel -->
+            <div class="panel">
+                <h2><i class="fas fa-flag-checkered"></i> TP Selection</h2>
+                
+                <div class="tp-selection-grid">
+                    <!-- PD Section -->
+                    <div class="tp-section">
+                        <h3><i class="fas fa-calendar-day"></i> PD</h3>
+                        <div class="tp-options">
+                            <div class="tp-btn pd" data-action="pdh-to-pdl">
+                                <i class="fas fa-arrow-down"></i> PDH to PDL
+                            </div>
+                            <div class="tp-btn pd" data-action="pdl-to-pdh">
+                                <i class="fas fa-arrow-up"></i> PDL to PDH
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Session Section -->
+                    <div class="tp-section">
+                        <h3><i class="fas fa-clock"></i> Ses</h3>
+                        <div class="tp-options">
+                            <div class="tp-btn ses" data-action="to-asia-high">
+                                <i class="fas fa-mountain"></i> To Asia High
+                            </div>
+                            <div class="tp-btn ses" data-action="to-asia-low">
+                                <i class="fas fa-valley"></i> To Asia Low
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RR Section -->
+                    <div class="tp-section">
+                        <h3><i class="fas fa-chart-line"></i> RR</h3>
+                        <div class="tp-options">
+                            <div class="tp-btn rr" data-action="1-4">
+                                1 : 4
+                            </div>
+                            <div class="tp-btn rr" data-action="1-5">
+                                1 : 5
+                            </div>
+                            <div class="tp-btn rr" data-action="1-8">
+                                1 : 8
+                            </div>
+                            <div class="tp-btn rr" data-action="1-10">
+                                1 : 10
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RN Section -->
+                    <div class="tp-section">
+                        <h3><i class="fas fa-circle"></i> RN</h3>
+                        <div class="tp-options">
+                            <div class="tp-btn rn" data-action="to-round-number">
+                                <i class="fas fa-bullseye"></i> To Round Number
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Opposite FVG Section -->
+                    <div class="tp-section">
+                        <h3><i class="fas fa-exchange-alt"></i> Opposite FVG</h3>
+                        <div class="tp-options">
+                            <div class="tp-btn opposite-fvg" data-action="new-opposite-m5-fvg">
+                                <i class="fas fa-sync-alt"></i> New Opposite m5 FVG
+                            </div>
+                            <div class="tp-btn opposite-fvg" data-action="new-opposite-m15-fvg">
+                                <i class="fas fa-sync-alt"></i> New Opposite m15 FVG
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Old Structure Section -->
+                    <div class="tp-section">
+                        <h3><i class="fas fa-landmark"></i> Old Structure</h3>
+                        <div class="tp-options">
+                            <div class="tp-btn old-structure" data-action="d-structure-high">
+                                <i class="fas fa-mountain"></i> D Structure High
+                            </div>
+                            <div class="tp-btn old-structure" data-action="d-structure-low">
+                                <i class="fas fa-valley"></i> D Structure Low
+                            </div>
+                            <div class="tp-btn old-structure" data-action="h4-structure-high">
+                                <i class="fas fa-mountain"></i> H4 Structure High
+                            </div>
+                            <div class="tp-btn old-structure" data-action="h4-structure-low">
+                                <i class="fas fa-valley"></i> H4 Structure Low
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- TP Selection Summary -->
+                <div class="panel-summary-box">
+                    <h4><i class="fas fa-list-check"></i> TP Selection Summary</h4>
+                    <div class="summary-content">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">PD:</span>
+                                <span id="tp-pd-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Session:</span>
+                                <span id="tp-ses-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">RR:</span>
+                                <span id="tp-rr-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Round #:</span>
+                                <span id="tp-rn-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Opposite FVG:</span>
+                                <span id="tp-oppositefvg-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Old Structure:</span>
+                                <span id="tp-oldstructure-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COMPLETE TRADE SUMMARY PANEL -->
+            <div class="panel complete-summary-panel">
+                <h2><i class="fas fa-clipboard-list"></i> Complete Trade Summary</h2>
+                
+                <div class="complete-summary-sections">
+                    <!-- Trade Setup Summary -->
+                    <div class="complete-summary-section">
+                        <h3><i class="fas fa-cogs"></i> Trade Setup</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Date:</span>
+                                <span id="complete-date-summary" class="summary-value">Today</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Pair:</span>
+                                <span id="complete-pair-summary" class="summary-value">XAUUSD</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Direction:</span>
+                                <span id="complete-direction-summary" class="summary-value bullish-text">Buy</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Yesterday Analysis Summary -->
+                    <div class="complete-summary-section">
+                        <h3><i class="fas fa-chart-line"></i> Yesterday Analysis</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Ytd Day:</span>
+                                <span id="complete-yesterday-day-summary" class="summary-value empty">No selection</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">FVG:</span>
+                                <span id="complete-yesterday-fvg-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">PD:</span>
+                                <span id="complete-yesterday-pd-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m15 Structure:</span>
+                                <span id="complete-yesterday-m15-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Structure:</span>
+                                <span id="complete-yesterday-m5-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Today Analysis Summary -->
+                    <div class="complete-summary-section">
+                        <h3><i class="fas fa-chart-bar"></i> Today Analysis</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">FVG:</span>
+                                <span id="complete-today-fvg-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Session:</span>
+                                <span id="complete-today-session-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Gap:</span>
+                                <span id="complete-today-gap-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Round #:</span>
+                                <span id="complete-today-rn-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m15 Structure:</span>
+                                <span id="complete-today-m15-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Structure:</span>
+                                <span id="complete-today-m5-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Entry Strategy Summary -->
+                    <div class="complete-summary-section">
+                        <h3><i class="fas fa-chess-knight"></i> Entry Strategy</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Break & Go:</span>
+                                <span id="complete-entry-breakgo-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Break & Miti:</span>
+                                <span id="complete-entry-breakmiti-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Sweep Type:</span>
+                                <span id="complete-entry-sweep-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Fill Type:</span>
+                                <span id="complete-entry-fill-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Entry Selection Summary -->
+                    <div class="complete-summary-section">
+                        <h3><i class="fas fa-bullseye"></i> Entry Selection</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">Direct Entry:</span>
+                                <span id="complete-entry-de-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Confirmation Entry:</span>
+                                <span id="complete-entry-ce-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Type:</span>
+                                <span id="complete-entry-m5type-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">BOS Type:</span>
+                                <span id="complete-entry-bos-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">m5 Age:</span>
+                                <span id="complete-entry-m5age-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- TP Selection Summary -->
+                    <div class="complete-summary-section">
+                        <h3><i class="fas fa-flag-checkered"></i> TP Selection</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">PD:</span>
+                                <span id="complete-tp-pd-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Session:</span>
+                                <span id="complete-tp-ses-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">RR:</span>
+                                <span id="complete-tp-rr-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Round #:</span>
+                                <span id="complete-tp-rn-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Opposite FVG:</span>
+                                <span id="complete-tp-oppositefvg-summary" class="summary-value empty">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Old Structure:</span>
+                                <span id="complete-tp-oldstructure-summary" class="summary-value empty">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Summary Notes -->
+                <div class="summary-notes">
+                    <h4><i class="fas fa-sticky-note"></i> Trading Notes</h4>
+                    <textarea id="trading-notes" placeholder="Add any additional notes about this trade setup..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Button Section -->
+        <div class="export-section">
+            <button id="export-jpeg-btn" class="export-btn">
+                <i class="fas fa-camera"></i> Export Dashboard as JPEG
+            </button>
+            <div id="export-status" class="export-status"></div>
+        </div>
+    </div>
+
+    <!-- Add html2canvas library for screenshot functionality -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>
