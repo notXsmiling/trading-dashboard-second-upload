@@ -6,67 +6,52 @@ const selections = {
         direction: 'buy'
     },
     yesterday: {
-        day: [],      // Ytd Day selections
+        day: [],
         fvg: [],
         pd: [],
-        m15: [],      // m15 Structure selections
-        m5: []        // m5 Structure selections
+        m15: [],
+        m5: []
     },
     today: {
         fvg: [],
         session: [],
         gap: [],
-        rn: [],       // Round Number selections
-        m15: [],      // Today m15 Structure selections
-        m5: []        // Today m5 Structure selections
+        rn: [],
+        m15: [],
+        m5: []
     },
     entry: {
-        breakGo: [],       // Break and Go strategies
-        breakMitiGo: [],   // Break and Miti and Go strategies
-        sweep: [],         // Sweep Type strategies
-        fill: []           // Fill Type strategies
+        breakGo: [],
+        breakMitiGo: [],
+        sweep: [],
+        fill: []
     },
     entrySelection: {
-        de: [],            // Direct Entry
-        ce: [],            // Confirmation Entry
-        m5Type: [],        // m5 Entry Type
-        bos: [],           // BOS Type
-        m5Age: []          // m5 Age
+        de: [],
+        ce: [],
+        m5Type: [],
+        bos: [],
+        m5Age: []
     },
     tpSelection: {
-        pd: [],            // PD
-        ses: [],           // Session
-        rr: [],            // RR
-        rn: [],            // Round Number
-        oppositeFvg: [],   // Opposite FVG
-        oldStructure: []   // Old Structure
+        pd: [],
+        ses: [],
+        rr: [],
+        rn: [],
+        oppositeFvg: [],
+        oldStructure: []
     }
 };
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize trade setup panel first
     initSetupPanel();
-    
-    // Set default active timeframe buttons
     setDefaultActiveTimeframes();
-    
-    // Set up all event listeners
     setupEventListeners();
-    
-    // Then update all panel summaries
     updateAllPanelSummaries();
-    
-    // Update complete trade summary
     updateCompleteTradeSummary();
-    
-    // Initialize highlighting
     updateHighlightedOptions();
-    
-    // Setup export functionality
     setupExportFunctionality();
-    
-    // Load saved notes
     loadNotesFromStorage();
 });
 
@@ -74,14 +59,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // TRADE SETUP PANEL FUNCTIONALITY
 // ============================================
 function initSetupPanel() {
-    // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('trade-date').value = today;
-    
-    // Setup button click handlers
     setupButtonHandlers();
-    
-    // Load saved setup if exists
     loadSavedSetup();
 }
 
@@ -89,9 +69,7 @@ function setupButtonHandlers() {
     // Date buttons
     document.querySelectorAll('.date-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active class from all date buttons
             document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
             this.classList.add('active');
             
             const dateType = this.getAttribute('data-date');
@@ -116,26 +94,18 @@ function setupButtonHandlers() {
     // Pair buttons
     document.querySelectorAll('.pair-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active class from all pair buttons
             document.querySelectorAll('.pair-btn').forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
             this.classList.add('active');
-            
-            const pair = this.getAttribute('data-pair');
-            updateSetupSelection('pair', pair);
+            updateSetupSelection('pair', this.getAttribute('data-pair'));
         });
     });
     
     // Direction buttons
     document.querySelectorAll('.direction-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active class from all direction buttons
             document.querySelectorAll('.direction-btn').forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
             this.classList.add('active');
-            
-            const direction = this.getAttribute('data-direction');
-            updateSetupSelection('direction', direction);
+            updateSetupSelection('direction', this.getAttribute('data-direction'));
         });
     });
     
@@ -156,10 +126,8 @@ function setupButtonHandlers() {
             dateType = 'custom';
         }
         
-        // Update active button
         document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
         document.querySelector(`.date-btn[data-date="${dateType}"]`).classList.add('active');
-        
         updateSetupSelection('date', { type: dateType, value: this.value });
     });
     
@@ -170,30 +138,13 @@ function setupButtonHandlers() {
 }
 
 function updateSetupSelection(type, value) {
-    switch(type) {
-        case 'date':
-            selections.setup.date = value;
-            break;
-        case 'pair':
-            selections.setup.pair = value;
-            break;
-        case 'direction':
-            selections.setup.direction = value;
-            break;
-    }
-    
-    // Update display
+    selections.setup[type] = value;
     updateCurrentSetupDisplay();
-    
-    // Update complete summary
     updateCompleteTradeSummary();
-    
-    // Save to localStorage
     saveSetupToStorage();
 }
 
 function updateCurrentSetupDisplay() {
-    // Format date for display
     let dateDisplay;
     const dateValue = selections.setup.date.value;
     
@@ -211,7 +162,6 @@ function updateCurrentSetupDisplay() {
         });
     }
     
-    // Update DOM elements
     document.getElementById('current-date').textContent = dateDisplay;
     document.getElementById('current-pair').textContent = selections.setup.pair;
     
@@ -229,35 +179,26 @@ function loadSavedSetup() {
     const savedSetup = localStorage.getItem('tradingSetup');
     if (savedSetup) {
         const setup = JSON.parse(savedSetup);
-        
-        // Update selections
         selections.setup = setup;
-        
-        // Update UI
         updateSetupUI(setup);
     }
 }
 
 function updateSetupUI(setup) {
-    // Set date
     document.getElementById('trade-date').value = setup.date.value;
     
-    // Set pair buttons
     document.querySelectorAll('.pair-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-pair') === setup.pair);
     });
     
-    // Set direction buttons
     document.querySelectorAll('.direction-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-direction') === setup.direction);
     });
     
-    // Set date button
     document.querySelectorAll('.date-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-date') === setup.date.type);
     });
     
-    // Update display
     updateCurrentSetupDisplay();
 }
 
@@ -265,23 +206,13 @@ function updateSetupUI(setup) {
 // DASHBOARD INITIALIZATION
 // ============================================
 function setDefaultActiveTimeframes() {
-    // Set default active timeframe for yesterday FVG (Daily)
+    // Set default active timeframe for yesterday FVG
     const yesterdayFvgTimeframe = document.querySelector('#yesterday-fvg-section .timeframe-btn[data-timeframe="d"]');
-    if (yesterdayFvgTimeframe) {
-        yesterdayFvgTimeframe.classList.add('active');
-    }
+    if (yesterdayFvgTimeframe) yesterdayFvgTimeframe.classList.add('active');
     
-    // Set default active timeframe for today FVG (Daily)
+    // Set default active timeframe for today FVG
     const todayFvgTimeframe = document.querySelector('#today-fvg-section .timeframe-btn[data-timeframe="d"]');
-    if (todayFvgTimeframe) {
-        todayFvgTimeframe.classList.add('active');
-    }
-    
-    // Set default active PD level for yesterday PD (PDH)
-    const yesterdayPdLevel = document.querySelector('#yesterday-pd-section .timeframe-btn[data-pd-level="pdh"]');
-    if (yesterdayPdLevel) {
-        yesterdayPdLevel.classList.add('active');
-    }
+    if (todayFvgTimeframe) todayFvgTimeframe.classList.add('active');
 }
 
 function setupEventListeners() {
@@ -307,21 +238,15 @@ function setupEventListeners() {
     
     // Yesterday FVG timeframes
     document.querySelectorAll('#yesterday-fvg-section .timeframe-btn').forEach(btn => {
-        btn.addEventListener('click', handleTimeframeClick);
+        btn.addEventListener('click', function() {
+            handleTimeframeClick.call(this, '#yesterday-fvg-section');
+        });
     });
     
     // Today FVG timeframes
     document.querySelectorAll('#today-fvg-section .timeframe-btn').forEach(btn => {
-        btn.addEventListener('click', handleTimeframeClick);
-    });
-    
-    // Yesterday PD levels
-    document.querySelectorAll('#yesterday-pd-section .timeframe-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active class from all PD level buttons
-            document.querySelectorAll('#yesterday-pd-section .timeframe-btn').forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
-            this.classList.add('active');
+            handleTimeframeClick.call(this, '#today-fvg-section');
         });
     });
     
@@ -382,7 +307,7 @@ function setupEventListeners() {
 function handleEntryStrategyClick() {
     const action = this.getAttribute('data-action');
     const strategy = this.getAttribute('data-strategy');
-    const section = this.closest('.entry-section').id;
+    const section = this.closest('.analysis-section').id;
     
     let category, selection;
     
@@ -425,10 +350,8 @@ function handleEntryStrategyClick() {
     );
     
     if (existingIndex !== -1) {
-        // Remove if already exists (toggle off)
         selections.entry[category].splice(existingIndex, 1);
     } else {
-        // Add if doesn't exist (toggle on)
         selections.entry[category].push(selection);
     }
     
@@ -438,115 +361,63 @@ function handleEntryStrategyClick() {
 
 function handleEntrySelectionClick() {
     const action = this.getAttribute('data-action');
-    const section = this.closest('.entry-selection-section').querySelector('h3').textContent;
+    const sectionTitle = this.closest('.analysis-section').querySelector('h3').textContent;
     
     let category, selection;
     
-    if (section.includes('Direct Entry')) {
+    if (sectionTitle.includes('Direct Entry')) {
         category = 'de';
-        selection = {
-            type: 'de',
-            action: action,
-            id: generateId()
-        };
+        selection = { type: 'de', action: action, id: generateId() };
         
         // Only one DE selection allowed
         if (this.classList.contains('active')) {
-            // Deselect all DE buttons
             document.querySelectorAll('.entry-selection-btn.de').forEach(b => b.classList.remove('active'));
             selections.entrySelection.de = [];
         } else {
-            // Deselect all DE buttons and clear selections
             document.querySelectorAll('.entry-selection-btn.de').forEach(b => b.classList.remove('active'));
-            selections.entrySelection.de = [];
+            selections.entrySelection.de = [selection];
             this.classList.add('active');
-            selections.entrySelection.de.push(selection);
         }
-    } else if (section.includes('Confirmation Entry')) {
+        updatePanelSummary('entrySelection', 'de');
+        return;
+    } else if (sectionTitle.includes('Confirmation Entry')) {
         category = 'ce';
-        selection = {
-            type: 'ce',
-            action: action,
-            id: generateId()
-        };
-        
-        // Toggle active state
-        this.classList.toggle('active');
-        
-        // Check if this selection already exists
-        const existingIndex = selections.entrySelection[category].findIndex(
-            item => item.action === action
-        );
-        
-        if (existingIndex !== -1) {
-            selections.entrySelection[category].splice(existingIndex, 1);
-        } else {
-            selections.entrySelection[category].push(selection);
-        }
-    } else if (section.includes('m5 Entry Type')) {
+        selection = { type: 'ce', action: action, id: generateId() };
+    } else if (sectionTitle.includes('m5 Entry Type')) {
         category = 'm5Type';
-        selection = {
-            type: 'm5Type',
-            action: action,
-            id: generateId()
-        };
-        
-        // Toggle active state
-        this.classList.toggle('active');
-        
-        // Check if this selection already exists
-        const existingIndex = selections.entrySelection[category].findIndex(
-            item => item.action === action
-        );
-        
-        if (existingIndex !== -1) {
-            selections.entrySelection[category].splice(existingIndex, 1);
-        } else {
-            selections.entrySelection[category].push(selection);
-        }
-    } else if (section.includes('BOS Type')) {
+        selection = { type: 'm5Type', action: action, id: generateId() };
+    } else if (sectionTitle.includes('BOS Type')) {
         category = 'bos';
-        selection = {
-            type: 'bos',
-            action: action,
-            id: generateId()
-        };
-        
-        // Toggle active state
-        this.classList.toggle('active');
-        
-        // Check if this selection already exists
-        const existingIndex = selections.entrySelection[category].findIndex(
-            item => item.action === action
-        );
-        
-        if (existingIndex !== -1) {
-            selections.entrySelection[category].splice(existingIndex, 1);
-        } else {
-            selections.entrySelection[category].push(selection);
-        }
-    } else if (section.includes('m5 Age')) {
+        selection = { type: 'bos', action: action, id: generateId() };
+    } else if (sectionTitle.includes('m5 Age')) {
         category = 'm5Age';
-        selection = {
-            type: 'm5Age',
-            action: action,
-            id: generateId()
-        };
+        selection = { type: 'm5Age', action: action, id: generateId() };
         
         // Only one m5 Age selection allowed
         if (this.classList.contains('active')) {
-            // Deselect all m5 Age buttons
             document.querySelectorAll('.entry-selection-btn.m5-age').forEach(b => b.classList.remove('active'));
             selections.entrySelection.m5Age = [];
         } else {
-            // Deselect all m5 Age buttons and clear selections
             document.querySelectorAll('.entry-selection-btn.m5-age').forEach(b => b.classList.remove('active'));
-            selections.entrySelection.m5Age = [];
+            selections.entrySelection.m5Age = [selection];
             this.classList.add('active');
-            selections.entrySelection.m5Age.push(selection);
         }
         updatePanelSummary('entrySelection', 'm5Age');
         return;
+    }
+    
+    // Toggle active state for multiple selections
+    this.classList.toggle('active');
+    
+    // Check if this selection already exists
+    const existingIndex = selections.entrySelection[category].findIndex(
+        item => item.action === action
+    );
+    
+    if (existingIndex !== -1) {
+        selections.entrySelection[category].splice(existingIndex, 1);
+    } else {
+        selections.entrySelection[category].push(selection);
     }
     
     updatePanelSummary('entrySelection', category);
@@ -554,52 +425,28 @@ function handleEntrySelectionClick() {
 
 function handleTPSelectionClick() {
     const action = this.getAttribute('data-action');
-    const section = this.closest('.tp-section').querySelector('h3').textContent;
+    const sectionTitle = this.closest('.analysis-section').querySelector('h3').textContent;
     
     let category, selection;
     
-    if (section.includes('PD')) {
+    if (sectionTitle.includes('PD')) {
         category = 'pd';
-        selection = {
-            type: 'pd',
-            action: action,
-            id: generateId()
-        };
-    } else if (section.includes('Ses')) {
+        selection = { type: 'pd', action: action, id: generateId() };
+    } else if (sectionTitle.includes('Ses')) {
         category = 'ses';
-        selection = {
-            type: 'ses',
-            action: action,
-            id: generateId()
-        };
-    } else if (section.includes('RR')) {
+        selection = { type: 'ses', action: action, id: generateId() };
+    } else if (sectionTitle.includes('RR')) {
         category = 'rr';
-        selection = {
-            type: 'rr',
-            action: action,
-            id: generateId()
-        };
-    } else if (section.includes('RN')) {
+        selection = { type: 'rr', action: action, id: generateId() };
+    } else if (sectionTitle.includes('RN')) {
         category = 'rn';
-        selection = {
-            type: 'rn',
-            action: action,
-            id: generateId()
-        };
-    } else if (section.includes('Opposite FVG')) {
+        selection = { type: 'rn', action: action, id: generateId() };
+    } else if (sectionTitle.includes('Opposite FVG')) {
         category = 'oppositeFvg';
-        selection = {
-            type: 'oppositeFvg',
-            action: action,
-            id: generateId()
-        };
-    } else if (section.includes('Old Structure')) {
+        selection = { type: 'oppositeFvg', action: action, id: generateId() };
+    } else if (sectionTitle.includes('Old Structure')) {
         category = 'oldStructure';
-        selection = {
-            type: 'oldStructure',
-            action: action,
-            id: generateId()
-        };
+        selection = { type: 'oldStructure', action: action, id: generateId() };
     }
     
     // Toggle active state
@@ -621,52 +468,33 @@ function handleTPSelectionClick() {
 
 function handleYesterdayDayClick() {
     const action = this.getAttribute('data-action');
+    const selection = { type: 'day', action: action, id: generateId() };
     
-    const selection = {
-        type: 'day',
-        action: action,
-        id: generateId()
-    };
-    
-    // For Ytd Day, only allow one selection (remove previous)
+    // Only one Ytd Day selection allowed
     selections.yesterday.day.forEach(item => {
         const oldBtn = document.querySelector(`#yesterday-day-section .action-btn[data-action="${item.action}"]`);
         if (oldBtn) oldBtn.classList.remove('active');
     });
     
-    // Clear previous selections (only one allowed)
-    selections.yesterday.day = [];
-    
-    // Add new selection
-    selections.yesterday.day.push(selection);
-    
-    // Set active state
+    selections.yesterday.day = [selection];
     this.classList.add('active');
     
     updatePanelSummary('yesterday', 'day');
     updateHighlightedOptions();
 }
 
-function handleTimeframeClick() {
+function handleTimeframeClick(sectionSelector) {
     // Remove active class from all timeframe buttons in this section
-    const section = this.closest('.timeframe-section, .pd-level-section');
-    if (section) {
-        section.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
-    } else {
-        // Fallback: remove from all timeframe buttons in the parent section
-        const parentSection = this.closest('[id$="-fvg-section"]');
-        if (parentSection) {
-            parentSection.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
-        }
+    const parentSection = document.querySelector(sectionSelector);
+    if (parentSection) {
+        parentSection.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
     }
-    
-    // Add active class to clicked button
-    this.classList.add('active');
 }
 
 function handleYesterdayStructureClick() {
     const action = this.getAttribute('data-action');
-    const sectionId = this.closest('.structure-section').id;
+    const sectionId = this.closest('.analysis-section').id;
     
     let category;
     if (sectionId.includes('m15')) {
@@ -675,11 +503,7 @@ function handleYesterdayStructureClick() {
         category = 'm5';
     }
     
-    const selection = {
-        type: category,
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: category, action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
@@ -704,12 +528,7 @@ function handleYesterdayFVGActionClick() {
     const activeTimeframe = document.querySelector('#yesterday-fvg-section .timeframe-btn.active');
     const timeframe = activeTimeframe ? activeTimeframe.getAttribute('data-timeframe') : 'd';
     
-    const selection = {
-        type: 'fvg',
-        timeframe: timeframe,
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: 'fvg', timeframe: timeframe, action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
@@ -731,22 +550,14 @@ function handleYesterdayFVGActionClick() {
 
 function handleYesterdayPDActionClick() {
     const action = this.getAttribute('data-action');
-    const activePDLevel = document.querySelector('#yesterday-pd-section .timeframe-btn.active');
-    const pdLevel = activePDLevel ? activePDLevel.getAttribute('data-pd-level') : 'pdh';
-    
-    const selection = {
-        type: 'pd',
-        level: pdLevel,
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: 'pd', action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
     
     // Check if this selection already exists
     const existingIndex = selections.yesterday.pd.findIndex(
-        item => item.level === pdLevel && item.action === action
+        item => item.action === action
     );
     
     if (existingIndex !== -1) {
@@ -764,12 +575,7 @@ function handleTodayFVGActionClick() {
     const activeTimeframe = document.querySelector('#today-fvg-section .timeframe-btn.active');
     const timeframe = activeTimeframe ? activeTimeframe.getAttribute('data-timeframe') : 'd';
     
-    const selection = {
-        type: 'fvg',
-        timeframe: timeframe,
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: 'fvg', timeframe: timeframe, action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
@@ -791,12 +597,7 @@ function handleTodayFVGActionClick() {
 
 function handleTodaySessionClick() {
     const action = this.getAttribute('data-action');
-    
-    const selection = {
-        type: 'session',
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: 'session', action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
@@ -818,12 +619,7 @@ function handleTodaySessionClick() {
 
 function handleTodayGapClick() {
     const action = this.getAttribute('data-action');
-    
-    const selection = {
-        type: 'gap',
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: 'gap', action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
@@ -845,12 +641,7 @@ function handleTodayGapClick() {
 
 function handleTodayRNClick() {
     const action = this.getAttribute('data-action');
-    
-    const selection = {
-        type: 'rn',
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: 'rn', action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
@@ -872,7 +663,7 @@ function handleTodayRNClick() {
 
 function handleTodayStructureClick() {
     const action = this.getAttribute('data-action');
-    const sectionId = this.closest('.structure-section').id;
+    const sectionId = this.closest('.analysis-section').id;
     
     let category;
     if (sectionId.includes('m15')) {
@@ -881,11 +672,7 @@ function handleTodayStructureClick() {
         category = 'm5';
     }
     
-    const selection = {
-        type: category,
-        action: action,
-        id: generateId()
-    };
+    const selection = { type: category, action: action, id: generateId() };
     
     // Toggle active state
     this.classList.toggle('active');
@@ -910,74 +697,55 @@ function handleTodayStructureClick() {
 // ============================================
 function updateAllPanelSummaries() {
     // Update all panel summaries
-    updatePanelSummary('yesterday', 'day');
-    updatePanelSummary('yesterday', 'fvg');
-    updatePanelSummary('yesterday', 'pd');
-    updatePanelSummary('yesterday', 'm15');
-    updatePanelSummary('yesterday', 'm5');
-    updatePanelSummary('today', 'fvg');
-    updatePanelSummary('today', 'session');
-    updatePanelSummary('today', 'gap');
-    updatePanelSummary('today', 'rn');
-    updatePanelSummary('today', 'm15');
-    updatePanelSummary('today', 'm5');
-    updatePanelSummary('entry', 'breakGo');
-    updatePanelSummary('entry', 'breakMitiGo');
-    updatePanelSummary('entry', 'sweep');
-    updatePanelSummary('entry', 'fill');
-    updatePanelSummary('entrySelection', 'de');
-    updatePanelSummary('entrySelection', 'ce');
-    updatePanelSummary('entrySelection', 'm5Type');
-    updatePanelSummary('entrySelection', 'bos');
-    updatePanelSummary('entrySelection', 'm5Age');
-    updatePanelSummary('tpSelection', 'pd');
-    updatePanelSummary('tpSelection', 'ses');
-    updatePanelSummary('tpSelection', 'rr');
-    updatePanelSummary('tpSelection', 'rn');
-    updatePanelSummary('tpSelection', 'oppositeFvg');
-    updatePanelSummary('tpSelection', 'oldStructure');
+    ['yesterday', 'today', 'entry', 'entrySelection', 'tpSelection'].forEach(panel => {
+        for (const category in selections[panel]) {
+            updatePanelSummary(panel, category);
+        }
+    });
 }
 
 function updatePanelSummary(panel, category) {
     // Get the summary element ID for this category
-    let summaryElementId;
-    
-    if (panel === 'yesterday') {
-        summaryElementId = `yesterday-${category}-summary`;
-    } else if (panel === 'today') {
-        summaryElementId = `today-${category}-summary`;
-    } else if (panel === 'entry') {
-        // Map entry categories to summary IDs
-        const entryMap = {
+    const summaryMap = {
+        'yesterday': {
+            'day': 'yesterday-day-summary',
+            'fvg': 'yesterday-fvg-summary',
+            'pd': 'yesterday-pd-summary',
+            'm15': 'yesterday-m15-summary',
+            'm5': 'yesterday-m5-summary'
+        },
+        'today': {
+            'fvg': 'today-fvg-summary',
+            'session': 'today-session-summary',
+            'gap': 'today-gap-summary',
+            'rn': 'today-rn-summary',
+            'm15': 'today-m15-summary',
+            'm5': 'today-m5-summary'
+        },
+        'entry': {
             'breakGo': 'entry-breakgo-summary',
             'breakMitiGo': 'entry-breakmiti-summary',
             'sweep': 'entry-sweep-summary',
             'fill': 'entry-fill-summary'
-        };
-        summaryElementId = entryMap[category];
-    } else if (panel === 'entrySelection') {
-        // Map entry selection categories to summary IDs
-        const entrySelectionMap = {
+        },
+        'entrySelection': {
             'de': 'entry-de-summary',
             'ce': 'entry-ce-summary',
             'm5Type': 'entry-m5type-summary',
             'bos': 'entry-bos-summary',
             'm5Age': 'entry-m5age-summary'
-        };
-        summaryElementId = entrySelectionMap[category];
-    } else if (panel === 'tpSelection') {
-        // Map TP selection categories to summary IDs
-        const tpMap = {
+        },
+        'tpSelection': {
             'pd': 'tp-pd-summary',
             'ses': 'tp-ses-summary',
             'rr': 'tp-rr-summary',
             'rn': 'tp-rn-summary',
             'oppositeFvg': 'tp-oppositefvg-summary',
             'oldStructure': 'tp-oldstructure-summary'
-        };
-        summaryElementId = tpMap[category];
-    }
+        }
+    };
     
+    const summaryElementId = summaryMap[panel]?.[category];
     if (!summaryElementId) return;
     
     const summaryElement = document.getElementById(summaryElementId);
@@ -1007,9 +775,7 @@ function updatePanelSummary(panel, category) {
                 const actionText = item.action === 'bullish' ? 'Bullish' : 'Bearish';
                 formattedText = `${timeframe.toUpperCase()} ${actionText}`;
             } else if (category === 'pd') {
-                const level = item.level || 'pdh';
-                const actionText = item.action === 'break' ? 'Break' : 'Sweep';
-                formattedText = `${actionText} ${level.toUpperCase()}`;
+                formattedText = formatPDAction(item.action);
             } else if (category === 'session') {
                 formattedText = formatSessionAction(item.action);
             } else if (category === 'gap') {
@@ -1056,20 +822,12 @@ function updatePanelSummary(panel, category) {
         }
     });
     
-    // Display as chips for multiple selections
+    // Display selections
     if (formattedSelections.length === 1) {
-        summaryElement.innerHTML = formattedSelections[0];
-        // Add appropriate class based on selection type
+        summaryElement.textContent = formattedSelections[0];
         updateSummaryElementClass(summaryElement, selectionsArray[0]);
     } else {
-        // For multiple selections, show as chips
-        summaryElement.innerHTML = '';
-        formattedSelections.forEach((text, index) => {
-            const chip = document.createElement('span');
-            chip.className = `selection-chip ${getChipClass(selectionsArray[index])}`;
-            chip.textContent = text;
-            summaryElement.appendChild(chip);
-        });
+        summaryElement.textContent = formattedSelections.join(', ');
         summaryElement.className = 'summary-value';
     }
     
@@ -1078,10 +836,8 @@ function updatePanelSummary(panel, category) {
 }
 
 function updateSummaryElementClass(element, selection) {
-    // Reset classes
     element.className = 'summary-value';
     
-    // Add appropriate class based on selection type
     if (selection.action) {
         if (selection.action.includes('bull') || selection.action === 'bullish' || 
             selection.action === 'gap-up' || selection.action.includes('up')) {
@@ -1098,34 +854,7 @@ function updateSummaryElementClass(element, selection) {
         } else if (selection.action === 'no-gap') {
             element.classList.add('no-gap');
         }
-    } else if (selection.type === 'breakGo' || selection.type === 'breakMitiGo') {
-        element.classList.add('break');
-    } else if (selection.type === 'sweep') {
-        element.classList.add('sweep');
-    } else if (selection.type === 'fill') {
-        element.classList.add('fill');
     }
-}
-
-function getChipClass(selection) {
-    if (selection.action) {
-        if (selection.action.includes('bull') || selection.action === 'bullish' || 
-            selection.action === 'gap-up' || selection.action.includes('up')) {
-            return 'bullish';
-        } else if (selection.action.includes('bear') || selection.action === 'bearish' || 
-                   selection.action === 'gap-down' || selection.action.includes('down')) {
-            return 'bearish';
-        } else if (selection.action.includes('break')) {
-            return 'break';
-        } else if (selection.action.includes('sweep')) {
-            return 'sweep';
-        } else if (selection.action.includes('fill')) {
-            return 'fill';
-        } else if (selection.action === 'no-gap') {
-            return 'no-gap';
-        }
-    }
-    return '';
 }
 
 // Update highlighted options based on other panel selections
@@ -1143,7 +872,6 @@ function updateHighlightedOptions() {
             let shouldHighlight = false;
             
             refs.forEach(refItem => {
-                // Check if this reference exists in other panels
                 if (checkIfSelected(refItem)) {
                     shouldHighlight = true;
                 }
@@ -1165,108 +893,20 @@ function checkIfSelected(ref) {
     
     // Check yesterday PD selections
     if (selections.yesterday.pd.some(item => 
-        (ref === 'break-pdh' && item.action === 'break' && item.level === 'pdh') ||
-        (ref === 'break-pdl' && item.action === 'break' && item.level === 'pdl') ||
-        (ref === 'sweep-pdh' && item.action === 'sweep' && item.level === 'pdh') ||
-        (ref === 'sweep-pdl' && item.action === 'sweep' && item.level === 'pdl')
+        (ref === 'break-pdh' && item.action === 'break-pdh') ||
+        (ref === 'break-pdl' && item.action === 'break-pdl') ||
+        (ref === 'sweep-pdh' && item.action === 'sweep-pdh') ||
+        (ref === 'sweep-pdl' && item.action === 'sweep-pdl')
     )) {
         return true;
     }
     
     // Check today gap selections
-    if (selections.today.gap.some(item => 
-        item.action === ref
-    )) {
+    if (selections.today.gap.some(item => item.action === ref)) {
         return true;
     }
     
     return false;
-}
-
-// Remove selection from the list
-function removeSelection(day, category, id) {
-    let index = -1;
-    
-    if (day === 'entry') {
-        // Find in entry strategies
-        for (const key in selections.entry) {
-            index = selections.entry[key].findIndex(item => item.id === id);
-            if (index !== -1) {
-                const selection = selections.entry[key][index];
-                selections.entry[key].splice(index, 1);
-                
-                // Remove active class from corresponding button
-                if (selection.action) {
-                    const button = document.querySelector(`.entry-option-btn[data-action="${selection.action}"]`);
-                    if (button) button.classList.remove('active');
-                } else if (selection.strategy) {
-                    const button = document.querySelector(`.entry-option-btn[data-strategy="${selection.strategy}"]`);
-                    if (button) button.classList.remove('active');
-                }
-                break;
-            }
-        }
-        updatePanelSummary(day, category);
-    } else if (day === 'entrySelection') {
-        // Find in entry selection
-        for (const key in selections.entrySelection) {
-            index = selections.entrySelection[key].findIndex(item => item.id === id);
-            if (index !== -1) {
-                const selection = selections.entrySelection[key][index];
-                selections.entrySelection[key].splice(index, 1);
-                
-                // Remove active class from corresponding button
-                const button = document.querySelector(`.entry-selection-btn[data-action="${selection.action}"]`);
-                if (button) button.classList.remove('active');
-                break;
-            }
-        }
-        updatePanelSummary(day, category);
-    } else if (day === 'tpSelection') {
-        // Find in TP selection
-        for (const key in selections.tpSelection) {
-            index = selections.tpSelection[key].findIndex(item => item.id === id);
-            if (index !== -1) {
-                const selection = selections.tpSelection[key][index];
-                selections.tpSelection[key].splice(index, 1);
-                
-                // Remove active class from corresponding button
-                const button = document.querySelector(`.tp-btn[data-action="${selection.action}"]`);
-                if (button) button.classList.remove('active');
-                break;
-            }
-        }
-        updatePanelSummary(day, category);
-    } else {
-        // Find in yesterday/today panels
-        index = selections[day][category].findIndex(item => item.id === id);
-        if (index !== -1) {
-            const selection = selections[day][category][index];
-            selections[day][category].splice(index, 1);
-            
-            // Remove active class from corresponding button
-            let buttonSelector;
-            if (category === 'day') {
-                buttonSelector = `#${day}-day-section .action-btn[data-action="${selection.action}"]`;
-            } else if (category === 'm15' || category === 'm5') {
-                buttonSelector = `#${day}-${category}-section .action-btn[data-action="${selection.action}"]`;
-            } else if (category === 'fvg') {
-                buttonSelector = `#${day}-fvg-section .action-btn[data-action="${selection.action}"]`;
-            } else if (category === 'pd') {
-                buttonSelector = `#${day}-pd-section .action-btn[data-action="${selection.action}"]`;
-            } else if (category === 'session' || category === 'gap' || category === 'rn') {
-                buttonSelector = `#${day}-${category}-section .action-btn[data-action="${selection.action}"]`;
-            }
-            
-            if (buttonSelector) {
-                const button = document.querySelector(buttonSelector);
-                if (button) button.classList.remove('active');
-            }
-            
-            updatePanelSummary(day, category);
-            updateHighlightedOptions();
-        }
-    }
 }
 
 // ============================================
@@ -1274,90 +914,32 @@ function removeSelection(day, category, id) {
 // ============================================
 function updateCompleteTradeSummary() {
     // Update Trade Setup
-    updateCompleteSummaryItem('complete-date-summary', document.getElementById('current-date').textContent);
-    updateCompleteSummaryItem('complete-pair-summary', document.getElementById('current-pair').textContent);
-    updateCompleteSummaryItem('complete-direction-summary', document.getElementById('current-direction').textContent, 
-        document.getElementById('current-direction').className.includes('bullish') ? 'bullish' : 'bearish');
+    document.getElementById('complete-date-summary').textContent = 
+        document.getElementById('current-date').textContent;
+    document.getElementById('complete-pair-summary').textContent = 
+        document.getElementById('current-pair').textContent;
+    document.getElementById('complete-direction-summary').textContent = 
+        document.getElementById('current-direction').textContent;
+    document.getElementById('complete-direction-summary').className = 
+        document.getElementById('current-direction').className;
     
-    // Update Yesterday Analysis
-    updateCompleteSummaryFromElement('complete-yesterday-day-summary', 'yesterday-day-summary');
-    updateCompleteSummaryFromElement('complete-yesterday-fvg-summary', 'yesterday-fvg-summary');
-    updateCompleteSummaryFromElement('complete-yesterday-pd-summary', 'yesterday-pd-summary');
-    updateCompleteSummaryFromElement('complete-yesterday-m15-summary', 'yesterday-m15-summary');
-    updateCompleteSummaryFromElement('complete-yesterday-m5-summary', 'yesterday-m5-summary');
+    // Update other summaries by copying from panel summaries
+    const summaries = [
+        'yesterday-day', 'yesterday-fvg', 'yesterday-pd', 'yesterday-m15', 'yesterday-m5',
+        'today-fvg', 'today-session', 'today-gap', 'today-rn', 'today-m15', 'today-m5',
+        'entry-breakgo', 'entry-breakmiti', 'entry-sweep', 'entry-fill',
+        'entry-de', 'entry-ce', 'entry-m5type', 'entry-bos', 'entry-m5age',
+        'tp-pd', 'tp-ses', 'tp-rr', 'tp-rn', 'tp-oppositefvg', 'tp-oldstructure'
+    ];
     
-    // Update Today Analysis
-    updateCompleteSummaryFromElement('complete-today-fvg-summary', 'today-fvg-summary');
-    updateCompleteSummaryFromElement('complete-today-session-summary', 'today-session-summary');
-    updateCompleteSummaryFromElement('complete-today-gap-summary', 'today-gap-summary');
-    updateCompleteSummaryFromElement('complete-today-rn-summary', 'today-rn-summary');
-    updateCompleteSummaryFromElement('complete-today-m15-summary', 'today-m15-summary');
-    updateCompleteSummaryFromElement('complete-today-m5-summary', 'today-m5-summary');
-    
-    // Update Entry Strategy
-    updateCompleteSummaryFromElement('complete-entry-breakgo-summary', 'entry-breakgo-summary');
-    updateCompleteSummaryFromElement('complete-entry-breakmiti-summary', 'entry-breakmiti-summary');
-    updateCompleteSummaryFromElement('complete-entry-sweep-summary', 'entry-sweep-summary');
-    updateCompleteSummaryFromElement('complete-entry-fill-summary', 'entry-fill-summary');
-    
-    // Update Entry Selection
-    updateCompleteSummaryFromElement('complete-entry-de-summary', 'entry-de-summary');
-    updateCompleteSummaryFromElement('complete-entry-ce-summary', 'entry-ce-summary');
-    updateCompleteSummaryFromElement('complete-entry-m5type-summary', 'entry-m5type-summary');
-    updateCompleteSummaryFromElement('complete-entry-bos-summary', 'entry-bos-summary');
-    updateCompleteSummaryFromElement('complete-entry-m5age-summary', 'entry-m5age-summary');
-    
-    // Update TP Selection
-    updateCompleteSummaryFromElement('complete-tp-pd-summary', 'tp-pd-summary');
-    updateCompleteSummaryFromElement('complete-tp-ses-summary', 'tp-ses-summary');
-    updateCompleteSummaryFromElement('complete-tp-rr-summary', 'tp-rr-summary');
-    updateCompleteSummaryFromElement('complete-tp-rn-summary', 'tp-rn-summary');
-    updateCompleteSummaryFromElement('complete-tp-oppositefvg-summary', 'tp-oppositefvg-summary');
-    updateCompleteSummaryFromElement('complete-tp-oldstructure-summary', 'tp-oldstructure-summary');
-}
-
-function updateCompleteSummaryItem(elementId, content, type = '') {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    // Clear existing content
-    element.innerHTML = '';
-    
-    if (typeof content === 'string') {
-        element.textContent = content || 'None';
-    } else {
-        // Handle HTML content (like chips)
-        element.appendChild(content.cloneNode(true));
-    }
-    
-    // Reset classes
-    element.className = 'summary-value';
-    if (type) {
-        element.classList.add(type);
-    }
-    
-    // Add empty class if content is empty or "None"
-    if (!content || content === 'None' || (typeof content === 'string' && content.includes('No selection'))) {
-        element.classList.add('empty');
-    }
-}
-
-function updateCompleteSummaryFromElement(completeElementId, sourceElementId) {
-    const sourceElement = document.getElementById(sourceElementId);
-    const completeElement = document.getElementById(completeElementId);
-    
-    if (!sourceElement || !completeElement) return;
-    
-    // Copy the content from source to complete summary
-    completeElement.innerHTML = sourceElement.innerHTML;
-    
-    // Copy the classes
-    completeElement.className = sourceElement.className;
-    
-    // Ensure it has the correct styling for complete panel
-    if (completeElement.className.includes('empty')) {
-        completeElement.textContent = 'None';
-    }
+    summaries.forEach(summary => {
+        const source = document.getElementById(`${summary}-summary`);
+        const target = document.getElementById(`complete-${summary}-summary`);
+        if (source && target) {
+            target.textContent = source.textContent;
+            target.className = source.className;
+        }
+    });
 }
 
 // ============================================
@@ -1432,8 +1014,10 @@ function formatM5AgeAction(action) {
 
 function formatPDAction(action) {
     const actions = {
-        'pdh-to-pdl': 'PDH to PDL',
-        'pdl-to-pdh': 'PDL to PDH'
+        'break-pdh': 'Break PDH',
+        'sweep-pdh': 'Sweep PDH',
+        'break-pdl': 'Break PDL',
+        'sweep-pdl': 'Sweep PDL'
     };
     return actions[action] || action;
 }
@@ -1507,26 +1091,22 @@ function formatDayAction(action) {
 
 function formatStructureAction(action) {
     const actions = {
-        // Yesterday m15
         'break-bull-high-m15': 'Break Bull High',
         'sweep-bull-high-m15': 'Sweep Bull High',
         'break-bull-low-m15': 'Break Bull Low',
         'sweep-bull-low-m15': 'Sweep Bull Low',
-        // Yesterday m5
+        'break-bear-high-m15': 'Break Bear High',
+        'sweep-bear-high-m15': 'Sweep Bear High',
+        'break-bear-low-m15': 'Break Bear Low',
+        'sweep-bear-low-m15': 'Sweep Bear Low',
         'break-bull-high-m5': 'Break Bull High',
         'sweep-bull-high-m5': 'Sweep Bull High',
         'break-bull-low-m5': 'Break Bull Low',
         'sweep-bull-low-m5': 'Sweep Bull Low',
-        // Today m15
-        'break-bull-high-m15-today': 'Break Bull High',
-        'sweep-bull-high-m15-today': 'Sweep Bull High',
-        'break-bull-low-m15-today': 'Break Bull Low',
-        'sweep-bull-low-m15-today': 'Sweep Bull Low',
-        // Today m5
-        'break-bull-high-m5-today': 'Break Bull High',
-        'sweep-bull-high-m5-today': 'Sweep Bull High',
-        'break-bull-low-m5-today': 'Break Bull Low',
-        'sweep-bull-low-m5-today': 'Sweep Bull Low'
+        'break-bear-high-m5': 'Break Bear High',
+        'sweep-bear-high-m5': 'Sweep Bear High',
+        'break-bear-low-m5': 'Break Bear Low',
+        'sweep-bear-low-m5': 'Sweep Bear Low'
     };
     return actions[action] || action;
 }
@@ -1575,6 +1155,12 @@ function generateId() {
 // EXPORT FUNCTIONALITY
 // ============================================
 function setupExportFunctionality() {
+    setupDashboardExport();
+    setupSummaryExportFunctionality();
+}
+
+// Dashboard export function
+function setupDashboardExport() {
     const exportBtn = document.getElementById('export-jpeg-btn');
     const exportStatus = document.getElementById('export-status');
     
@@ -1586,9 +1172,231 @@ function setupExportFunctionality() {
         
         // Capture the entire dashboard container
         html2canvas(document.querySelector('.dashboard'), {
-            scale: 2, // Higher quality
+            scale: 2,
             useCORS: true,
             backgroundColor: '#f5f6fa'
+        }).then(canvas => {
+            const image = canvas.toDataURL('image/jpeg', 1.0);
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+            const pair = selections.setup.pair || 'XAUUSD';
+            const direction = selections.setup.direction === 'buy' ? 'Buy' : 'Sell';
+            
+            let filename = `Trading-Analysis-Dashboard-${pair}-${direction}-${timestamp}`;
+            
+            const daySelection = selections.yesterday.day[0];
+            if (daySelection) {
+                filename += `-${daySelection.action}`;
+            }
+            
+            link.download = `${filename}.jpg`;
+            link.href = image;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            exportStatus.textContent = 'Dashboard exported successfully!';
+            exportStatus.className = 'export-status success';
+            
+            setTimeout(() => {
+                exportStatus.textContent = '';
+                exportStatus.className = 'export-status';
+            }, 3000);
+        }).catch(error => {
+            console.error('Export error:', error);
+            exportStatus.textContent = 'Error exporting dashboard. Please try again.';
+            exportStatus.className = 'export-status error';
+            
+            setTimeout(() => {
+                exportStatus.textContent = '';
+                exportStatus.className = 'export-status';
+            }, 3000);
+        });
+    });
+}
+
+// Summary report export function
+function setupSummaryExportFunctionality() {
+    const exportSummaryBtn = document.getElementById('export-summary-btn');
+    const exportStatus = document.getElementById('export-status');
+    
+    if (!exportSummaryBtn) return;
+    
+    exportSummaryBtn.addEventListener('click', function() {
+        exportStatus.textContent = 'Preparing summary report...';
+        exportStatus.className = 'export-status processing';
+        
+        // Create a container for the export with better styling
+        const exportContainer = document.createElement('div');
+        exportContainer.className = 'export-summary-container';
+        exportContainer.style.cssText = `
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+        `;
+        
+        // Clone the complete summary panel
+        const summaryPanel = document.querySelector('.complete-summary-panel').cloneNode(true);
+        
+        // Remove the export button and notes from the export version
+        const notesSection = summaryPanel.querySelector('.summary-notes');
+        if (notesSection) notesSection.style.display = 'none';
+        
+        // Add header with trade setup info
+        const header = document.createElement('div');
+        header.style.cssText = `
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        `;
+        
+        const title = document.createElement('h1');
+        title.textContent = 'Trading Analysis Summary Report';
+        title.style.cssText = `
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 24px;
+        `;
+        
+        const setupInfo = document.createElement('div');
+        setupInfo.style.cssText = `
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        `;
+        
+        const pair = document.createElement('span');
+        pair.textContent = `Pair: ${selections.setup.pair}`;
+        pair.style.cssText = `
+            font-weight: bold;
+            color: #2563eb;
+            padding: 5px 10px;
+            background: #eff6ff;
+            border-radius: 5px;
+        `;
+        
+        const direction = document.createElement('span');
+        direction.textContent = `Direction: ${selections.setup.direction === 'buy' ? 'Buy' : 'Sell'}`;
+        direction.style.cssText = `
+            font-weight: bold;
+            color: ${selections.setup.direction === 'buy' ? '#10b981' : '#ef4444'};
+            padding: 5px 10px;
+            background: ${selections.setup.direction === 'buy' ? '#f0fdf4' : '#fef2f2'};
+            border-radius: 5px;
+        `;
+        
+        const date = document.createElement('span');
+        date.textContent = `Date: ${selections.setup.date.value}`;
+        date.style.cssText = `
+            font-weight: bold;
+            color: #64748b;
+            padding: 5px 10px;
+            background: #f8fafc;
+            border-radius: 5px;
+        `;
+        
+        setupInfo.appendChild(pair);
+        setupInfo.appendChild(direction);
+        setupInfo.appendChild(date);
+        
+        header.appendChild(title);
+        header.appendChild(setupInfo);
+        
+        // Style the summary sections for export
+        const sections = summaryPanel.querySelectorAll('.complete-summary-section');
+        sections.forEach(section => {
+            section.style.cssText = `
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 15px;
+                margin-bottom: 15px;
+            `;
+            
+            // Style section headers
+            const sectionHeader = section.querySelector('h3');
+            if (sectionHeader) {
+                sectionHeader.style.cssText = `
+                    color: #2563eb;
+                    margin-top: 0;
+                    margin-bottom: 12px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid #e2e8f0;
+                    font-size: 16px;
+                `;
+            }
+            
+            // Style summary items
+            const summaryItems = section.querySelectorAll('.summary-item');
+            summaryItems.forEach(item => {
+                item.style.cssText = `
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 5px 0;
+                    border-bottom: 1px solid #f1f5f9;
+                `;
+                
+                const label = item.querySelector('.summary-label');
+                const value = item.querySelector('.summary-value');
+                
+                if (label) {
+                    label.style.cssText = `
+                        color: #64748b;
+                        font-size: 12px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    `;
+                }
+                
+                if (value) {
+                    value.style.cssText = `
+                        color: #1e293b;
+                        font-weight: 500;
+                        text-align: right;
+                        font-size: 14px;
+                    `;
+                }
+            });
+        });
+        
+        // Clear any existing content and append new structure
+        exportContainer.innerHTML = '';
+        exportContainer.appendChild(header);
+        exportContainer.appendChild(summaryPanel);
+        
+        // Create a temporary container for export
+        const tempContainer = document.createElement('div');
+        tempContainer.appendChild(exportContainer);
+        document.body.appendChild(tempContainer);
+        
+        // Add timestamp to the bottom
+        const footer = document.createElement('div');
+        footer.style.cssText = `
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            color: #94a3b8;
+            font-size: 12px;
+        `;
+        footer.textContent = `Generated on: ${new Date().toLocaleString()}`;
+        exportContainer.appendChild(footer);
+        
+        // Capture the summary report
+        html2canvas(exportContainer, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            width: exportContainer.offsetWidth,
+            height: exportContainer.offsetHeight
         }).then(canvas => {
             // Convert canvas to JPEG
             const image = canvas.toDataURL('image/jpeg', 1.0);
@@ -1599,16 +1407,7 @@ function setupExportFunctionality() {
             const pair = selections.setup.pair || 'XAUUSD';
             const direction = selections.setup.direction === 'buy' ? 'Buy' : 'Sell';
             
-            // Include more info in filename
-            let filename = `Trading-Analysis-${pair}-${direction}-${timestamp}`;
-            
-            // Add key selections to filename for better organization
-            const daySelection = selections.yesterday.day[0];
-            if (daySelection) {
-                filename += `-${daySelection.action}`;
-            }
-            
-            link.download = `${filename}.jpg`;
+            link.download = `Trading-Summary-${pair}-${direction}-${timestamp}.jpg`;
             link.href = image;
             
             // Trigger download
@@ -1616,7 +1415,10 @@ function setupExportFunctionality() {
             link.click();
             document.body.removeChild(link);
             
-            exportStatus.textContent = 'Dashboard exported successfully!';
+            // Clean up
+            document.body.removeChild(tempContainer);
+            
+            exportStatus.textContent = 'Summary report exported successfully!';
             exportStatus.className = 'export-status success';
             
             // Reset status after 3 seconds
@@ -1625,9 +1427,14 @@ function setupExportFunctionality() {
                 exportStatus.className = 'export-status';
             }, 3000);
         }).catch(error => {
-            console.error('Export error:', error);
-            exportStatus.textContent = 'Error exporting dashboard. Please try again.';
+            console.error('Summary export error:', error);
+            exportStatus.textContent = 'Error exporting summary report. Please try again.';
             exportStatus.className = 'export-status error';
+            
+            // Clean up
+            if (tempContainer.parentNode) {
+                document.body.removeChild(tempContainer);
+            }
             
             setTimeout(() => {
                 exportStatus.textContent = '';
